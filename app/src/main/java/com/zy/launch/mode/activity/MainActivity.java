@@ -1,14 +1,19 @@
 package com.zy.launch.mode.activity;
 
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.zy.launch.mode.R;
 import com.zy.launch.mode.viewinjection.ViewField;
 import com.zy.launch.mode.viewinjection.ViewMethod;
+import com.zy.launch.mode.viewinjection.ViewUtils;
 
 
 public class MainActivity extends BaseActivity {
@@ -18,14 +23,12 @@ public class MainActivity extends BaseActivity {
 
 
     @Override
-    protected void initData() {
-
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        ViewUtils.register(this);
     }
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_main;
-    }
 
     @Override
     protected TextView getMyTitle() {
@@ -37,10 +40,26 @@ public class MainActivity extends BaseActivity {
         return "MainActivity";
     }
 
-
     @ViewMethod(R.id.activity_main_standard)
     private void standard(View view){
-        startActivity(new Intent(this,MainActivity.class));
+        startActivity(new Intent(this,StandardActivity.class));
+    }
+
+    @ViewMethod(R.id.activity_main_single_top)
+    private void single_top(View view){
+        startActivity(new Intent(this,SingleTopActivity.class));
+    }
+
+
+    @ViewMethod(R.id.activity_main_single_task)
+    private void single_task(View view){
+        startActivity(new Intent(this,SingleTaskActivity.class));
+    }
+
+
+    @ViewMethod(R.id.activity_main_single_instance)
+    private void single_instance(View view){
+        startActivity(new Intent(this,SingleInstanceActivity.class));
     }
 
 }

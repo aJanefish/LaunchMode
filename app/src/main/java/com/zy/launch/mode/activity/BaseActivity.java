@@ -1,15 +1,19 @@
 package com.zy.launch.mode.activity;
 
 import android.app.ActivityManager;
+
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.zy.launch.mode.viewinjection.ViewUtils;
+
 
 import java.util.List;
 
@@ -20,17 +24,36 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(getLayoutId());
-        ViewUtils.register(this);
+        Log.d(getTag(),"onCreate");
+    }
 
-        mActivityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-        initData();
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(getTag(),"onRestart");
+    }
+
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        Log.d(getTag(),"onStart");
+    }
+
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(getTag(),"onNewIntent");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         showLog();
+        Log.d(getTag(),"onResume");
     }
 
     private void showLog() {
@@ -39,18 +62,18 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         TextView textView = getMyTitle();
         textView.setText(getTag() + "\nisTaskRoot:" + isTaskRoot());
+        textView.append("\n"+mActivityManager.getClass());
 
         textView.append("\nTaskId:" + getTaskId());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             List<ActivityManager.AppTask> list = mActivityManager.getAppTasks();
-            textView.append("\nAppTaskS:" + list.size());
-            
+            textView.append("\nAppTask Size:" + list.size());
+
 
             for (ActivityManager.AppTask appTask : list) {
                 ActivityManager.RecentTaskInfo recentTaskInfo = appTask.getTaskInfo();
                 textView.append("\nAppTask:" + appTask.hashCode());
                 textView.append("\nrecentTaskInfo:" + recentTaskInfo.hashCode());
-
 
             }
 
@@ -59,9 +82,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
-    protected abstract void initData();
-
-    protected abstract int getLayoutId();
 
     protected abstract TextView getMyTitle();
 
